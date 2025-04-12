@@ -1,5 +1,6 @@
 ﻿using ExpenseTrackerAPI.Database;
 using ExpenseTrackerAPI.DTOs;
+using ExpenseTrackerAPI.Interfaces;
 using ExpenseTrackerAPI.Models;
 using ExpenseTrackerAPI.Repo;
 using ExpenseTrackerAPI.Utilities;
@@ -18,9 +19,9 @@ namespace ExpenseTrackerAPI.Controllers
     public class LoginActionController : ControllerBase
     {
         private readonly PasswordHashing _hashing;
-        private readonly UserRepo _userRepo;
+        private readonly UserRepoInterface _userRepo;
 
-        public LoginActionController(PasswordHashing hashing, UserRepo userRepo)
+        public LoginActionController(PasswordHashing hashing, UserRepoInterface userRepo)
         {
             _hashing = hashing;
             _userRepo = userRepo;
@@ -62,7 +63,7 @@ namespace ExpenseTrackerAPI.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> loginVerification([FromBody] LoginDto login)
         {
-            var (status, uid, username, hashedpassword) = await _userRepo.UserLoginEmailAsync(login.Email);
+            var (status, uid, username, hashedpassword) = await _userRepo.UserLoginEmailAsync(login.Email.ToLower());
             if (status < 1 || !_hashing.VerifyPassword(login.Password, hashedpassword))
             {
                 return Unauthorized("Invalid Credential");

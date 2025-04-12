@@ -17,7 +17,6 @@ namespace ExpenseTrackerAPI.Repo
 
         public async Task<(int status, int userID)> CreateAccountAsync(UserAccount user)
         {
-            Console.WriteLine(user);
             using var connection = _databaseContext.getConnection();
             await connection.OpenAsync();
 
@@ -71,11 +70,6 @@ namespace ExpenseTrackerAPI.Repo
             int userID = Convert.ToInt32(uidParam.Value);
             string? username = Convert.ToString(usernameParam.Value);
             string? hashedpassword = Convert.ToString(hashedpw.Value);
-
-            Console.WriteLine(status);
-            Console.WriteLine(userID);
-            Console.WriteLine(username);
-            Console.WriteLine(hashedpassword);
 
             return (status, userID, username, hashedpassword);
         }

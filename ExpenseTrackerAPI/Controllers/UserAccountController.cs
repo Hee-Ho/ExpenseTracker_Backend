@@ -1,5 +1,7 @@
 ﻿using ExpenseTrackerAPI.Database;
+using ExpenseTrackerAPI.DTOs;
 using ExpenseTrackerAPI.Models;
+using ExpenseTrackerAPI.Repo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
@@ -11,35 +13,63 @@ namespace ExpenseTrackerAPI.Controllers
     [ApiController]
     public class UserAccountController : ControllerBase
     {
-        //load database connection
-        private readonly DatabaseContext _databaseContext;
+        private readonly ExpenseCategoryRepo _categoryRepo;
 
-        public UserAccountController(DatabaseContext databaseContext)
+        public UserAccountController(ExpenseCategoryRepo categoryRepo)
         {
-            _databaseContext = databaseContext;
+            _categoryRepo = categoryRepo;
         }
 
-        [HttpGet(Name = "GetUsersInfo")] //the request method to be use
-        // Task<ActionResult<List<UserAccount>>> - use to define the result of an action/method
-        // IActionResult includes everything
-        public async Task<IActionResult> GetInfo()
+        [HttpPost("CreateExpenseCategory")]
+        public async Task<IActionResult> CreateCategory([FromBody] UserCategoryDto newCategory)
         {
-            List<string> userAccounts = new List<string>();
-
-            using (var connection = _databaseContext.getConnection()) 
-            { 
-                await connection.OpenAsync();
-                using (var command = new MySqlCommand("SELECT username FROM user_accounts", connection))
-                using (var reader = command.ExecuteReader())
-                { 
-                    while (await reader.ReadAsync())
-                    {
-                        userAccounts.Add(reader.GetString(0));
-                    }      
-                }
+            try
+            {
+                var (status, message) = await _categoryRepo.CreateCategoryAsync(newCategory.userId, newCategory.catergory_name.ToLower());
+                return Created();
             }
-            return Ok(userAccounts);
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
+        [HttpDelete("DeleteExpenseCategory")]
+        public async Task<IActionResult> DeleteCategory([FromBody] UserCategoryDto category)
+        {
+            try
+            {
+                int status = await _categoryRepo.DeleteCategoryAsync(category.userId, category.category_id);
+
+                return NoContent();
+
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("EditExpenseCategory")]
+        public async Task<IActionResult> EditCategory([FromBody] UserCategoryDto category)
+        {
+            try
+            {
+                if (category.catergory_name == null)
+                {
+                    return BadRequest("Missing parameter");
+                }
+                int status = await _categoryRepo.EditCategoryAsync(category.userId, category.category_id, category.catergory_name);
+
+                return Ok("Category updated");
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
+
+    
 }
