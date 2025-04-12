@@ -1,0 +1,68 @@
+## Build folders ##
+bin/
+obj/
+
+## User-specific files ##
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vcxproj.user
+
+## Rider ##
+.idea/
+
+## VS Code ##
+.vscode/
+
+## NuGet Packages ##
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+.nuget/
+
+## Project lock files ##
+project.lock.json
+project.fragment.lock.json
+
+## ASP.NET Scaffolding ##
+ScaffoldingReadMe.txt
+
+## Entity Framework Migrations snapshot ##
+Migrations/*Designer.cs
+Migrations/*ModelSnapshot.cs
+
+## Logs ##
+*.log
+
+## Temporary files ##
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
+
+## Secrets or local settings (if used) ##
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+## Docker (optional) ##
+**/docker-compose.override.yml
+**/docker-compose.*
+.dockerignore
+
+## Publish output ##
+publish/
+*.Publish.xml
+
+## Others ##
+TestResults/
+node_modules/
+wwwroot/lib/
+testSP.sql
+
+
+# Optional: Visual Studio cache
+.vs/
