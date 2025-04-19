@@ -1,16 +1,9 @@
-﻿using ExpenseTrackerAPI.Database;
-using ExpenseTrackerAPI.DTOs;
+﻿using ExpenseTrackerAPI.DTOs;
 using ExpenseTrackerAPI.Interfaces;
 using ExpenseTrackerAPI.Models;
-using ExpenseTrackerAPI.Repo;
 using ExpenseTrackerAPI.Utilities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using MySql.Data.MySqlClient;
-using System.Data;
-using System.Security.Cryptography;
-using System.Text;
+
 
 namespace ExpenseTrackerAPI.Controllers
 {

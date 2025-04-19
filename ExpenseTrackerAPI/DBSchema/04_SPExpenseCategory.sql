@@ -63,13 +63,14 @@ CREATE PROCEDURE spEditCategory (
     OUT status_code INT
 )
 BEGIN
+	DECLARE user_exist INT;
 	SET status_code = 0;
-
+    
 	SELECT COUNT(*) into user_exist FROM user_accounts WHERE userID = uid;
     IF user_exist < 1 THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Account does not exist';
-	ELSE IF NOT EXISTS (SELECT 1 FROM expense_categories WHERE cid = category_id AND userID = uid) THEN 
+	ELSEIF NOT EXISTS (SELECT 1 FROM expense_categories WHERE cid = category_id AND userID = uid) THEN 
 		SIGNAL SQLSTATE '45000'
 		SET MESSAGE_TEXT = "User's category does not exist";
 	ELSE 

@@ -1,22 +1,10 @@
--- Inserting transaction --
-/* To get the error message in backend
-catch (MySqlException ex)
-        {
-            // Handle MySQL-specific errors
-            if (ex.SqlState == "45000")  // Custom MySQL errors from SIGNAL SQLSTATE
-            {
-                return (false, ex.Message);
-            }
 
-            return (false, "Database error: " + ex.Message); 
-*/
 DELIMITER //
 CREATE PROCEDURE spInsertTransaction(
 	IN uid BIGINT UNSIGNED,
     IN category_id BIGINT UNSIGNED,
-    IN saving_id BIGINT UNSIGNED,
     IN transaction_amount DECIMAL(10, 2),
-    IN descrip TEXT,
+    IN descript TEXT,
     IN transaction_date DATE, 
     OUT status_code INT
 )
@@ -37,7 +25,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Category not found';
 	END IF;
     
-    INSERT INTO transactions_info(userID, categoryID, amount, description, transaction_date) VALUES (uid, category_id, transaction_amount, descrip, transaction_date);
+    INSERT INTO transactions_info(userID, categoryID, amount, description, transaction_date) VALUES (uid, category_id, transaction_amount, descript, transaction_date);
     SET status_code = 1;
 END //
 DELIMITER ;
@@ -69,7 +57,9 @@ CREATE PROCEDURE spUpdateTransaction (
 	IN uid BIGINT UNSIGNED,
     IN transaction_id BIGINT UNSIGNED,
     IN new_amount DECIMAL(10, 2),
-    IN category_id BIGINT UNSIGNED, 
+    IN category_id BIGINT UNSIGNED,
+    In new_descript TEXT,
+    IN new_date DATE,
     OUT status_code INT
 )
 BEGIN
@@ -88,7 +78,9 @@ BEGIN
     
 	UPDATE transactions_info SET 
 		amount = IF(new_amount IS NOT NULL, new_amount, amount), 
-		categoryID = IF(category_id IS NOT NULL, category_id, categoryID)
+		categoryID = IF(category_id IS NOT NULL, category_id, categoryID),
+        description = IF(new_description IS NOT NULL, new_descript, description),
+        transaction_date = IF(new_date IS NOT NULL, new_date, transaction_date)
     WHERE tid = transaction_id AND userID = uid;
 	SET status_code = 1;
 END //

@@ -1,30 +1,31 @@
-﻿using ExpenseTrackerAPI.Database;
-using ExpenseTrackerAPI.DTOs;
-using ExpenseTrackerAPI.Models;
+﻿using ExpenseTrackerAPI.DTOs;
 using ExpenseTrackerAPI.Repo;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
-using System.Numerics;
 
 namespace ExpenseTrackerAPI.Controllers
 {
-    [Route("api/User")]
+    [Route("api/User/category")]
     [ApiController]
-    public class UserAccountController : ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly ExpenseCategoryRepo _categoryRepo;
 
-        public UserAccountController(ExpenseCategoryRepo categoryRepo)
+        public CategoryController(ExpenseCategoryRepo categoryRepo)
         {
             _categoryRepo = categoryRepo;
         }
 
-        [HttpPost("CreateExpenseCategory")]
-        public async Task<IActionResult> CreateCategory([FromBody] UserCategoryDto newCategory)
+        //-----------------------------------------------Category-----------------------------------------------------------------------------
+       
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto newCategory)
         {
             try
             {
+                if (newCategory.catergory_name == null)
+                {
+                    return BadRequest("Parameter missing");
+                }
                 var (status, message) = await _categoryRepo.CreateCategoryAsync(newCategory.userId, newCategory.catergory_name.ToLower());
                 return Created();
             }
@@ -35,8 +36,8 @@ namespace ExpenseTrackerAPI.Controllers
 
         }
 
-        [HttpDelete("DeleteExpenseCategory")]
-        public async Task<IActionResult> DeleteCategory([FromBody] UserCategoryDto category)
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteCategory([FromBody] DeleteCategoryDto category)
         {
             try
             {
@@ -51,16 +52,16 @@ namespace ExpenseTrackerAPI.Controllers
             }
         }
 
-        [HttpPost("EditExpenseCategory")]
-        public async Task<IActionResult> EditCategory([FromBody] UserCategoryDto category)
+        [HttpPost("update")]
+        public async Task<IActionResult> EditCategory([FromBody] EditCategoryDto category)
         {
             try
             {
-                if (category.catergory_name == null)
+                if (category.new_categoryName == null)
                 {
                     return BadRequest("Missing parameter");
                 }
-                int status = await _categoryRepo.EditCategoryAsync(category.userId, category.category_id, category.catergory_name);
+                int status = await _categoryRepo.EditCategoryAsync(category.userId, category.category_id, category.new_categoryName);
 
                 return Ok("Category updated");
             }
@@ -69,7 +70,9 @@ namespace ExpenseTrackerAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        //------------------------------------------------------------------------------------------------------------------------------------
     }
 
-    
+
 }

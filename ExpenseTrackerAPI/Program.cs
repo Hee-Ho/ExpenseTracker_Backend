@@ -42,6 +42,7 @@ builder.Services.AddScoped<DatabaseContext>();
 builder.Services.AddScoped<PasswordHashing>();
 builder.Services.AddScoped<UserRepoInterface, UserRepo>();
 builder.Services.AddScoped<ExpenseCategoryRepo>();
+builder.Services.AddScoped<TransactionsRepo>();
 builder.Services.Configure<PasswordSalt>(builder.Configuration.GetSection("Security")); //register usage of salt
 
 var app = builder.Build();
